@@ -1,0 +1,54 @@
+---
+services:
+  samba:
+    image: nowsci/samba-domain
+    container_name: samba
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - samba-data:/var/lib/samba
+      - samba-config:/etc/samba/external
+    environment:
+      - DOMAIN=CORP.EXAMPLE.COM
+      - DOMAIN_DC=dc=corp,dc=example,dc=com
+      - DOMAIN_EMAIL=example.com
+      - DOMAINPASS=Password123!
+      - DNSFORWARDER=192.168.1.1
+      - HOSTIP=192.168.1.217
+    ports:
+      - 53:53
+      - 53:53/udp
+      - 88:88
+      - 88:88/udp
+      - 123:123
+      - 123:123/udp
+      - 135:135
+      - 137-138:137-138/udp
+      - 139:139
+      - 389:389
+      - 389:389/udp
+      - 445:445
+      - 464:464
+      - 464:464/udp
+      - 636:636
+      - 1024-1044:1024-1044
+      - 3268-3269:3268-3269
+    dns_search:
+      - corp.example.com
+    dns:
+      - 192.168.1.217
+      - 192.168.1.1
+    extra_hosts:
+      - exampledc.corp.example.com:192.168.1.217
+    hostname: exampledc
+    cap_add:
+      - NET_ADMIN
+      - SYS_NICE
+      - SYS_TIME
+    devices:
+      - /dev/net/tun
+    privileged: true
+    restart: always
+
+volumes:
+  samba-data:
+  samba-config:
